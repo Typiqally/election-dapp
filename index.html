@@ -29,6 +29,23 @@
               </div>
             </div>
           </form>
+          <hr />
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Number of votes</th>
+              </tr>
+              </thead>
+              <tbody id="table-body">
+              </tbody>
+            </table>
+          </div>
+          <form id="vote-form">
+            <select id="candidate-options" name="candidate"></select>
+            <button type="submit" class="btn btn-primary">Cast vote</button>
+          </form>
         </div>
       </div>
     </div>
@@ -42,7 +59,7 @@
     const web3 = new Web3("http://localhost:7545")
 
     const contractDetails = {
-      address: "",
+      address: "0x9cE5CA203fFD4fF88A15FB3352D56AA0908263e4",
       abi: [
         {
           "inputs": [],
@@ -116,6 +133,7 @@
 
       contract.methods.getCandidate().call((error, result) => {
         $("#candidateName").html(result)
+        console.log(result)
       })
     }
 
