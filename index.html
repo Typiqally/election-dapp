@@ -2,149 +2,186 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Candidates</title>
-  <link href="css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Candidates</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-  <div class="container" style="width: 650px;">
+<div class="container" style="width: 650px;">
     <div class="row">
-      <div class="col-lg-12 text-center">
-        <h1>Candidates</h1>
-        <hr />
-        <br />
-        <div id="content">
-          <span>Candidate: <h4 id="candidateName"></h4></span>
-          <hr />
-          <form role="form">
-            <div class="form-group" style="display:inline;">
-              <div class="input-group">
-                <input class="form-control input-lg" name="candidateName">
-                <span class="input-group-btn">
-                  <button type="submit" class="btn btn-primary btn-lg">Update name</button>
-                </span>
-              </div>
-            </div>
-          </form>
-          <hr />
-          <div class="table-responsive">
-            <table class="table table-bordered">
-              <thead>
-              <tr>
-                <th>Candidate</th>
-                <th>Number of votes</th>
-              </tr>
-              </thead>
-              <tbody id="table-body">
-              </tbody>
-            </table>
-          </div>
-          <form id="vote-form">
-            <select id="candidate-options" name="candidate"></select>
-            <button type="submit" class="btn btn-primary">Cast vote</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+        <div class="col-lg-12 text-center">
+            <h1>Candidates</h1>
+            <hr/>
+            <br/>
+            <div id="content">
+                <div id="candidates">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/web3.min.js"></script>
-  <script>
+                </div>
+                <hr/>
+                <form role="form">
+                    <div class="form-group" style="display:inline;">
+                        <div class="input-group">
+                            <input class="form-control" name="name">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-primary">Sign up</button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+                <div>Your address: <span id="address"></span></div>
+                <hr/>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Candidate</th>
+                            <th>Number of votes</th>
+                        </tr>
+                        </thead>
+                        <tbody id="table-body">
+                        </tbody>
+                    </table>
+                </div>
+                <form id="vote-form">
+                    <select id="candidate-options" name="candidate"></select>
+                    <button type="submit" class="btn btn-primary">Cast vote</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/web3.min.js"></script>
+<script>
     // Initialize Web3
     const web3 = new Web3("http://localhost:7545")
 
     const contractDetails = {
-      address: "",
-      abi: [
-        {
-          "inputs": [],
-          "stateMutability": "nonpayable",
-          "type": "constructor"
-        },
-        {
-          "inputs": [],
-          "name": "candidateName",
-          "outputs": [
+        address: "0x157A429ED22197683910A9bC56188A430B096adf",
+        abi: [
             {
-              "internalType": "string",
-              "name": "",
-              "type": "string"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [],
-          "name": "getCandidate",
-          "outputs": [
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    }
+                ],
+                "name": "signUpForCandidate",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
             {
-              "internalType": "string",
-              "name": "",
-              "type": "string"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [
+                "inputs": [],
+                "name": "allCandidates",
+                "outputs": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "address",
+                                "name": "addr",
+                                "type": "address"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "name",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "votes",
+                                "type": "uint256"
+                            }
+                        ],
+                        "internalType": "struct Election.Candidate[]",
+                        "name": "",
+                        "type": "tuple[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
             {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "candidates",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "addr",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "votes",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
             }
-          ],
-          "name": "setCandidate",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ]
+        ]
     }
 
     web3.eth.getAccounts()
-      .then((accounts) => {
-        console.log(`Accounts: ${accounts}`)
+        .then((accounts) => {
+            console.log(`Accounts: ${accounts}`)
 
-        const account = accounts[0]
+            const account = accounts[0]
+            selectAccount(account)
 
+            const contract = new web3.eth.Contract(contractDetails.abi, contractDetails.address)
+            refreshCandidates(contract)
+
+            $("form").on("submit", function (event) {
+                event.preventDefault();
+                const name = $("input[name=name]").val()
+
+                signUpForCandidates(contract, name, account)
+            })
+        })
+
+    const selectAccount = (account) => {
         web3.eth.defaultAccount = account
         console.log(`Selected account: ${account}`)
+        $("#address").html(account)
+    }
 
-        const contract = new web3.eth.Contract(contractDetails.abi, contractDetails.address)
-        refreshCandidate(contract)
+    const refreshCandidates = (contract) => {
+        console.log("Fetching candidate name...")
 
-        $("form").on("submit", function (event) {
-          event.preventDefault();
-          const input = $("input").val()
-
-          updateCandidate(contract, account, input)
+        contract.methods.allCandidates().call((error, result) => {
+            result.forEach((result) => {
+                $("#candidates").append(`<div>${result.addr} : ${result.name}</div>`)
+            })
         })
-      })
-
-    const refreshCandidate = (contract) => {
-      console.log("Fetching candidate name...")
-
-      contract.methods.getCandidate().call((error, result) => {
-        $("#candidateName").html(result)
-      })
     }
 
-    const updateCandidate = (contract, account, name) => {
-      console.log(`Update candidate name: ${name}`)
+    const signUpForCandidates = (contract, account, name) => {
+        console.log(`Sign up for candidate with name: ${name}`)
 
-      contract.methods.setCandidate(name).send({ from: account }, () => {
-        console.log("Candidate name has been updated")
-        refreshCandidate(contract)
-      });
+        contract.methods.signUpForCandidates(name).send({from: account}, () => {
+            console.log("Sign up successful...")
+            refreshCandidates(contract)
+        });
     }
-  </script>
+</script>
 </body>
 
 </html>

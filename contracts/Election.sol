@@ -3,17 +3,20 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 contract Election {
-    string candidateName;
 
-    constructor() {
-        candidateName = "Candidate 1";
+    struct Candidate {
+        address addr;
+        string name;
+        uint votes;
     }
 
-    function getCandidate() public view returns (string memory) {
-        return candidateName;
+    Candidate[] public candidates;
+
+    function allCandidates() public view returns(Candidate[] memory) {
+        return candidates;
     }
 
-    function setCandidate (string memory name) public {
-        candidateName = name;
+    function signUpForCandidate(string memory name) public {
+        candidates.push(Candidate(msg.sender, name, 0));
     }
 }
