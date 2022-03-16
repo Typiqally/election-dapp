@@ -153,7 +153,7 @@
                 event.preventDefault();
                 const name = $("input[name=name]").val()
 
-                signUpForCandidates(contract, name, account)
+                signUpForCandidate(contract, name, account)
             })
         })
 
@@ -173,10 +173,10 @@
         })
     }
 
-    const signUpForCandidates = (contract, account, name) => {
+    const signUpForCandidate = (contract, name, account) => {
         console.log(`Sign up for candidate with name: ${name}`)
 
-        contract.methods.signUpForCandidates(name).send({from: account}, () => {
+        contract.methods.signUpForCandidate(name).send({from: account}, () => {
             console.log("Sign up successful...")
             refreshCandidates(contract)
         });
