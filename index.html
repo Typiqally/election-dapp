@@ -62,7 +62,7 @@
     const web3 = new Web3("http://localhost:7545")
 
     const contractDetails = {
-        address: "",
+        address: "0x79c0d76646202EE36ACC810B06497bfd0b987E96",
         abi: [
             {
                 "inputs": [
@@ -167,6 +167,8 @@
         console.log("Fetching candidate name...")
 
         contract.methods.allCandidates().call((error, result) => {
+            $("#candidates").empty()
+
             result.forEach((result) => {
                 $("#candidates").append(`<div>${result.addr} : ${result.name}</div>`)
             })
