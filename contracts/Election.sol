@@ -13,7 +13,7 @@ contract Election {
         return candidateName;
     }
 
-    function setCandidate (string memory name) public {
+    function setCandidate(string memory name) public {
         candidateName = name;
     }
 }

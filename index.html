@@ -2,132 +2,132 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Candidates</title>
-  <link href="css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Candidates</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-  <div class="container" style="width: 650px;">
+<div class="container" style="width: 650px;">
     <div class="row">
-      <div class="col-lg-12 text-center">
-        <h1>Candidates</h1>
-        <hr />
-        <br />
-        <div id="content">
-          <span>Candidate: <h4 id="candidateName"></h4></span>
-          <hr />
-          <form role="form">
-            <div class="form-group" style="display:inline;">
-              <div class="input-group">
-                <input class="form-control input-lg" name="candidateName">
-                <span class="input-group-btn">
+        <div class="col-lg-12 text-center">
+            <h1>Candidates</h1>
+            <hr/>
+            <br/>
+            <div id="content">
+                <span>Candidate: <h4 id="candidateName"></h4></span>
+                <hr/>
+                <form role="form">
+                    <div class="form-group" style="display:inline;">
+                        <div class="input-group">
+                            <input class="form-control input-lg" name="candidateName">
+                            <span class="input-group-btn">
                   <button type="submit" class="btn btn-primary btn-lg">Update name</button>
                 </span>
-              </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-          </form>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/web3.min.js"></script>
-  <script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/web3.min.js"></script>
+<script>
     // Initialize Web3
     const web3 = new Web3("http://localhost:7545")
 
     const contractDetails = {
-      address: "",
-      abi: [
-        {
-          "inputs": [],
-          "stateMutability": "nonpayable",
-          "type": "constructor"
-        },
-        {
-          "inputs": [],
-          "name": "candidateName",
-          "outputs": [
+        address: "",
+        abi: [
             {
-              "internalType": "string",
-              "name": "",
-              "type": "string"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [],
-          "name": "getCandidate",
-          "outputs": [
+                "inputs": [],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
             {
-              "internalType": "string",
-              "name": "",
-              "type": "string"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [
+                "inputs": [],
+                "name": "candidateName",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
             {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
+                "inputs": [],
+                "name": "getCandidate",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    }
+                ],
+                "name": "setCandidate",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
             }
-          ],
-          "name": "setCandidate",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ]
+        ]
     }
 
     web3.eth.getAccounts()
-      .then((accounts) => {
-        console.log(`Accounts: ${accounts}`)
+        .then((accounts) => {
+            console.log(`Accounts: ${accounts}`)
 
-        const account = accounts[0]
+            const account = accounts[0]
 
-        web3.eth.defaultAccount = account
-        console.log(`Selected account: ${account}`)
+            web3.eth.defaultAccount = account
+            console.log(`Selected account: ${account}`)
 
-        const contract = new web3.eth.Contract(contractDetails.abi, contractDetails.address)
-        refreshCandidate(contract)
+            const contract = new web3.eth.Contract(contractDetails.abi, contractDetails.address)
+            refreshCandidate(contract)
 
-        $("form").on("submit", function (event) {
-          event.preventDefault();
-          const input = $("input").val()
+            $("form").on("submit", function (event) {
+                event.preventDefault();
+                const input = $("input").val()
 
-          updateCandidate(contract, account, input)
+                updateCandidate(contract, account, input)
+            })
         })
-      })
 
     const refreshCandidate = (contract) => {
-      console.log("Fetching candidate name...")
+        console.log("Fetching candidate name...")
 
-      contract.methods.getCandidate().call((error, result) => {
-        $("#candidateName").html(result)
-      })
+        contract.methods.getCandidate().call((error, result) => {
+            $("#candidateName").html(result)
+        })
     }
 
     const updateCandidate = (contract, account, name) => {
-      console.log(`Update candidate name: ${name}`)
+        console.log(`Update candidate name: ${name}`)
 
-      contract.methods.setCandidate(name).send({ from: account }, () => {
-        console.log("Candidate name has been updated")
-        refreshCandidate(contract)
-      });
+        contract.methods.setCandidate(name).send({from: account}, () => {
+            console.log("Candidate name has been updated")
+            refreshCandidate(contract)
+        });
     }
-  </script>
+</script>
 </body>
 
 </html>
