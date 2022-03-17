@@ -62,21 +62,8 @@
     const web3 = new Web3("http://localhost:7545")
 
     const contractDetails = {
-        address: "0x79c0d76646202EE36ACC810B06497bfd0b987E96",
+        address: "",
         abi: [
-            {
-                "inputs": [
-                    {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
-                    }
-                ],
-                "name": "signUpForCandidate",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
             {
                 "inputs": [],
                 "name": "allCandidates",
@@ -134,6 +121,19 @@
                     }
                 ],
                 "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    }
+                ],
+                "name": "signUpForCandidate",
+                "outputs": [],
+                "stateMutability": "nonpayable",
                 "type": "function"
             }
         ]
