@@ -17,10 +17,6 @@
             <hr/>
             <br/>
             <div id="content">
-                <div id="candidates">
-
-                </div>
-                <hr/>
                 <form role="form">
                     <div class="form-group" style="display:inline;">
                         <div class="input-group">
@@ -33,7 +29,7 @@
                 </form>
                 <div>Your address: <span id="address"></span></div>
                 <hr/>
-                <div class="table-responsive">
+                <div id="candidates" class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                         <tr>
@@ -57,133 +53,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/web3.min.js"></script>
-<script>
-    // Initialize Web3
-    const web3 = new Web3("http://localhost:7545")
+<script src="js/app.js"></script>
 
-    const contractDetails = {
-        address: "",
-        abi: [
-            {
-                "inputs": [],
-                "name": "allCandidates",
-                "outputs": [
-                    {
-                        "components": [
-                            {
-                                "internalType": "address",
-                                "name": "addr",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "name",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "votes",
-                                "type": "uint256"
-                            }
-                        ],
-                        "internalType": "struct Election.Candidate[]",
-                        "name": "",
-                        "type": "tuple[]"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "candidates",
-                "outputs": [
-                    {
-                        "internalType": "address",
-                        "name": "addr",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "votes",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
-                    }
-                ],
-                "name": "signUpForCandidate",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            }
-        ]
-    }
-
-    web3.eth.getAccounts()
-        .then((accounts) => {
-            console.log(`Accounts: ${accounts}`)
-
-            const account = accounts[0]
-            selectAccount(account)
-
-            const contract = new web3.eth.Contract(contractDetails.abi, contractDetails.address)
-            refreshCandidates(contract)
-
-            $("form").on("submit", function (event) {
-                event.preventDefault();
-                const name = $("input[name=name]").val()
-
-                signUpForCandidate(contract, name, account)
-            })
-        })
-
-    const selectAccount = (account) => {
-        web3.eth.defaultAccount = account
-        console.log(`Selected account: ${account}`)
-        $("#address").html(account)
-    }
-
-    const refreshCandidates = (contract) => {
-        console.log("Fetching candidate name...")
-
-        contract.methods.allCandidates().call((error, result) => {
-            $("#candidates").empty()
-
-            result.forEach((result) => {
-                $("#candidates").append(`<div>${result.addr} : ${result.name}</div>`)
-            })
-        })
-    }
-
-    const signUpForCandidate = (contract, name, account) => {
-        console.log(`Sign up for candidate with name: ${name}`)
-
-        contract.methods.signUpForCandidate(name).send({from: account}, () => {
-            console.log("Sign up successful...")
-            refreshCandidates(contract)
-        });
-    }
-</script>
 </body>
 
 </html>
