@@ -2,8 +2,21 @@
 const web3 = new Web3("http://localhost:7545")
 
 const contractDetails = {
-    address: "0xA90E32249Cc3D1B8b2b07C062Bb9B67814BbC684",
+    address: "",
     abi: [
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "addr",
+                    "type": "address"
+                }
+            ],
+            "name": "castVote",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
         {
             "inputs": [
                 {
@@ -15,6 +28,40 @@ const contractDetails = {
             "name": "signUpForCandidate",
             "outputs": [],
             "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "name": "ballot",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "id",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "bool",
+                    "name": "voted",
+                    "type": "bool"
+                },
+                {
+                    "internalType": "address",
+                    "name": "voter",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "candidate",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -65,6 +112,25 @@ const contractDetails = {
                     "internalType": "uint256",
                     "name": "votes",
                     "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "addr",
+                    "type": "address"
+                }
+            ],
+            "name": "checkBallot",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
                 }
             ],
             "stateMutability": "view",
@@ -145,6 +211,25 @@ const contractDetails = {
                     "type": "address"
                 }
             ],
+            "name": "getTotalVotes",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "addr",
+                    "type": "address"
+                }
+            ],
             "name": "validCandidate",
             "outputs": [
                 {
@@ -159,9 +244,16 @@ const contractDetails = {
     ]
 }
 
+const tableBody = document.getElementById("table-body");
+const candidateOptions = document.getElementById("candidate-options");
+const voteForm = document.getElementById("vote-form");
+
+
 web3.eth.getAccounts()
     .then((accounts) => {
         console.log(`Accounts: ${accounts}`)
+        voteForm.addEventListener("submit", voteHandler, false);
+
 
         const account = accounts[4]
         selectAccount(account)
@@ -175,6 +267,13 @@ web3.eth.getAccounts()
 
             signUpForCandidate(contract, name, account)
         })
+
+        function voteHandler(evt) {
+            let select = document.getElementById('candidate-options');
+            let addr = select.options[select.selectedIndex].value;
+            window.alert(addr);
+            castVote(contract, account, addr);
+        }
     })
 
 const selectAccount = (account) => {
@@ -183,13 +282,13 @@ const selectAccount = (account) => {
     $("#address").html(account)
 }
 
-const tableBody = document.getElementById("table-body");
-const candidateOptions = document.getElementById("candidate-options");
-const voteForm = document.getElementById("vote-form");
+
 
 const refreshCandidates = (contract) => {
     console.log("Fetching candidate name...")
     $("#table-body").empty();
+    $("#candidate-options").empty();
+
     contract.methods.getCandidateAddresses().call((error, result) => {
         console.log(result);
         result.forEach(address => {
@@ -218,7 +317,7 @@ const refreshCandidates = (contract) => {
 
                     // Create an option for each candidate
                     const candidateOption = document.createElement("option");
-                    candidateOption.value = candidate.name + " " + candidate.addr;
+                    candidateOption.value = candidate.addr;
                     candidateOption.innerText = candidate.name + " " + candidate.addr;
                     candidateOptions.appendChild(candidateOption);
                 }
@@ -232,19 +331,13 @@ const signUpForCandidate = (contract, name, account) => {
     console.log(`Sign up for candidate with name: ${name}`)
 
     contract.methods.signUpForCandidate(name).send({from: account}, () => {
-        console.log("Sign up successful...")
-        refreshCandidates(contract)
+        console.log("Sign up successful...");
+        refreshCandidates(contract);
     });
 }
 
-function voteHandler(evt) {
-    const candidate = new FormData(evt.target).get("candidate");
-    contractInstance.castVote(candidate, {from: web3.eth.accounts[0]}, function () {
-        const votes = contractInstance.totalVotesFor.call(candidate);
-
-        // Updates the vote element.
-        document.getElementById("vote-" + candidate).innerText = votes;
+const castVote = (contract, account, addr) => {
+    contract.methods.castVote(addr).send({from: account}, () => {
+        console.log("Successfully voted on candidate");
     });
 }
-
-voteForm.addEventListener("submit", voteHandler, false);
