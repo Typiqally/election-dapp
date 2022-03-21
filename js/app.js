@@ -2,7 +2,7 @@
 const web3 = new Web3("http://localhost:7545")
 
 const contractDetails = {
-    address: "0xFAf8Dc29C70e8aDaF5a84AD2704867B2B79554eD",
+    address: "0xA90E32249Cc3D1B8b2b07C062Bb9B67814BbC684",
     abi: [
         {
             "inputs": [
@@ -47,6 +47,11 @@ const contractDetails = {
             "name": "candidates",
             "outputs": [
                 {
+                    "internalType": "uint256",
+                    "name": "id",
+                    "type": "uint256"
+                },
+                {
                     "internalType": "address",
                     "name": "addr",
                     "type": "address"
@@ -77,6 +82,11 @@ const contractDetails = {
             "outputs": [
                 {
                     "components": [
+                        {
+                            "internalType": "uint256",
+                            "name": "id",
+                            "type": "uint256"
+                        },
                         {
                             "internalType": "address",
                             "name": "addr",
@@ -126,6 +136,25 @@ const contractDetails = {
             ],
             "stateMutability": "view",
             "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "addr",
+                    "type": "address"
+                }
+            ],
+            "name": "validCandidate",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
         }
     ]
 }
@@ -134,7 +163,7 @@ web3.eth.getAccounts()
     .then((accounts) => {
         console.log(`Accounts: ${accounts}`)
 
-        const account = accounts[3]
+        const account = accounts[4]
         selectAccount(account)
 
         const contract = new web3.eth.Contract(contractDetails.abi, contractDetails.address)
@@ -189,8 +218,8 @@ const refreshCandidates = (contract) => {
 
                     // Create an option for each candidate
                     const candidateOption = document.createElement("option");
-                    candidateOption.value = candidate.name;
-                    candidateOption.innerText = candidate.name;
+                    candidateOption.value = candidate.name + " " + candidate.addr;
+                    candidateOption.innerText = candidate.name + " " + candidate.addr;
                     candidateOptions.appendChild(candidateOption);
                 }
             )
