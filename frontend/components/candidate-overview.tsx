@@ -1,39 +1,69 @@
 import { NextPage } from "next";
 import { Container, VStack } from "@chakra-ui/react";
 
+import { Contract } from "ethers";
+
 import CandidateTable from "../components/candidate-table";
 import CandidateVoteForm from "../components/candidate-vote-form";
 import Candidate from "../models/candidate";
+import { useEffect, useState } from "react";
 
 interface IProps {
+  election: Contract | undefined;
   address: string;
 }
 
-const CandidateOverview: NextPage<IProps> = (props) => {
-  const candidates: Array<Candidate> = [
-    {
-      name: "Jelle",
-      votes: 5,
-      address: "0x1B8A276D99c5EF88d56D3033406aa075A0bb521b"
-    },
-    {
-      name: "Koen",
-      votes: 15,
-      address: "0x31ce5Fca09e9a94A5376577E11E27424b4aad59E"
-    }
-  ];
+interface IState {
+  candidates: Array<Candidate> | null;
+}
 
-  const handleVote = (candidate: Candidate | null) => {
-    console.log(candidate);
+const CandidateOverview: NextPage<IProps> = (props) => {
+  const [state, setState] = useState<IState>({ candidates: null });
+
+  useEffect(() => {
+    fetchCandidates().then(_ => console.log("Fetched candidates"));
+
+    setInterval(fetchCandidates, 500);
+  }, []);
+
+  const fetchCandidates = async () => {
+    if (props.election === undefined) {
+      return;
+    }
+
+    const candidates: Array<Candidate> = [];
+    const addresses = await props.election.getCandidateAddresses();
+
+    for (const address of addresses) {
+      const candidate = await props.election.candidates(address);
+
+      candidates.push({
+        name: candidate.name,
+        address: candidate.ownAddress,
+        votes: candidate.votes.toNumber()
+      });
+    }
+
+    setState({
+      candidates: candidates
+    });
+  };
+
+  const handleVote = async (candidate: Candidate | null) => {
+    if (props.election === undefined || candidate == null) {
+      return;
+    }
+
+    await props.election.castVote(candidate.address);
   };
 
   return (
     <>
       <VStack spacing={5}>
         <p>Your wallet address: {props.address}</p>
-        <CandidateTable candidates={candidates} />
+        <CandidateTable candidates={state.candidates} />
         <Container maxW="container.sm">
-          <CandidateVoteForm candidates={candidates} onVote={handleVote} />
+          <CandidateVoteForm candidates={state.candidates} onVote={handleVote} />
         </Container>
       </VStack>
     </>

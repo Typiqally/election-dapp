@@ -52,7 +52,7 @@ const Home: NextPage = () => {
       </Head>
       {
         state.selectedAddress
-          ? <CandidateOverview address={state.selectedAddress} />
+          ? <CandidateOverview election={state.election} address={state.selectedAddress} />
           : <ConnectWallet onWalletConnected={handleWalletConnected} />
       }
     </>
