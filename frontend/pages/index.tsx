@@ -20,7 +20,7 @@ const Home: NextPage = () => {
     }
   ]
 
-  const handleVote = (candidate: string | null) => {
+  const handleVote = (candidate: Candidate | null) => {
     console.log(candidate);
   };
 

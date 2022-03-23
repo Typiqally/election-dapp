@@ -1,20 +1,20 @@
 import { NextPage } from "next";
-import { HStack, Button, Select, Tr, Td } from "@chakra-ui/react";
+import { HStack, Button, Select } from "@chakra-ui/react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import Candidate from "../models/candidate";
 
 interface IProps {
   candidates: Array<Candidate> | null;
 
-  onVote(candidate: string | null): void;
+  onVote(candidate: Candidate | null): void;
 }
 
 interface IState {
-  candidate: string | null;
+  candidateAddress: string | null;
 }
 
 const CandidateVoteForm: NextPage<IProps> = (props) => {
-  const [state, setState] = useState<IState>({ candidate: null });
+  const [state, setState] = useState<IState>({ candidateAddress: null });
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const { value, name } = event.target;
@@ -23,13 +23,15 @@ const CandidateVoteForm: NextPage<IProps> = (props) => {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    props.onVote(state.candidate);
+
+    const candidate = props.candidates?.find(candidate => candidate.address === state.candidateAddress) ?? null;
+    props.onVote(candidate);
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <HStack>
-        <Select name="candidate" placeholder="Select candidate" onChange={handleChange}>
+        <Select name="candidateAddress" placeholder="Select candidate" onChange={handleChange}>
           {
             props.candidates && props.candidates.map(candidate =>
               <option key={candidate.address} value={candidate.address}>{candidate.name}</option>
