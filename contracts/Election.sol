@@ -32,9 +32,9 @@ contract Election {
     }
 
     function castVote(address _address) public {
-        require(ballotExists(msg.sender));
-
         require(candidateExists(_address));
+        require(!ballotExists(msg.sender));
+
         candidates[_address].votes += 1;
         ballot[msg.sender] = Vote(msg.sender, _address);
     }
