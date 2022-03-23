@@ -1,27 +1,47 @@
 import { NextPage } from "next";
 import Head from "next/head";
-import { Container, VStack } from "@chakra-ui/react";
+import { useState } from "react";
 
-import CandidateTable from "../components/candidate-table";
-import CandidateVoteForm from "../components/candidate-vote-form";
-import Candidate from "../models/candidate";
+import ConnectWallet from "../components/connect-wallet";
+import CandidateOverview from "../components/candidate-overview";
+import Election from "../contracts/Election.json";
+
+import { Contract, ethers } from "ethers";
+
+interface IState {
+  selectedAddress: string | undefined;
+  provider: any | undefined;
+  election: Contract | undefined;
+}
 
 const Home: NextPage = () => {
-  const candidates: Array<Candidate> = [
-    {
-      name: "Jelle",
-      votes: 5,
-      address: "0x1B8A276D99c5EF88d56D3033406aa075A0bb521b"
-    },
-    {
-      name: "Koen",
-      votes: 15,
-      address: "0x31ce5Fca09e9a94A5376577E11E27424b4aad59E"
-    }
-  ]
 
-  const handleVote = (candidate: Candidate | null) => {
-    console.log(candidate);
+  const [state, setState] = useState<IState>({
+    selectedAddress: undefined,
+    election: undefined,
+    provider: undefined
+  });
+
+  const handleWalletConnected = (address: string) => {
+    const { provider, election } = initializeEther();
+
+    setState({
+      selectedAddress: address,
+      provider: provider,
+      election: election
+    });
+  };
+
+  const initializeEther = () => {
+    // @ts-ignore
+    let provider = new ethers.providers.Web3Provider(window.ethereum);
+    let election = new ethers.Contract(
+      Election.address,
+      Election.artifact.abi,
+      provider.getSigner(0)
+    );
+
+    return { provider, election };
   };
 
   return (
@@ -30,12 +50,11 @@ const Home: NextPage = () => {
         <title>Candidates</title>
         <meta name="description" content="Election Dapp" />
       </Head>
-      <CandidateTable candidates={candidates}/>
-      <VStack>
-        <Container maxW="container.sm">
-          <CandidateVoteForm candidates={candidates} onVote={handleVote} />
-        </Container>
-      </VStack>
+      {
+        state.selectedAddress
+          ? <CandidateOverview address={state.selectedAddress} />
+          : <ConnectWallet onWalletConnected={handleWalletConnected} />
+      }
     </>
   );
 };
