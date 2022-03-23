@@ -9,7 +9,7 @@ interface IProps {
 const CandidateTable: NextPage<IProps> = (props) => {
 
   return (
-    <Table id="candidates" variant="simple">
+    <Table id="candidates" variant="unstyled">
       <Thead>
         <Tr>
           <Th>Candidate</Th>
