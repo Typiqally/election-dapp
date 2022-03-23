@@ -60,7 +60,9 @@ const ConnectWallet: NextPage<IProps> = (props) => {
             </Alert>
           }
           <p>Please login to your wallet</p>
-          <Button colorScheme="facebook" onClick={connectWallet}>Connect wallet</Button>
+          <Button colorScheme="telegram" onClick={connectWallet}>
+            Connect wallet
+          </Button>
         </VStack>
       </Box>
     </Flex>
