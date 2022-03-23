@@ -23,7 +23,7 @@ const CandidateTable: NextPage<IProps> = (props) => {
         {
           props.candidates && props.candidates.map(candidate => {
             return (
-              <Tr>
+              <Tr key={candidate.address}>
                 <Td>{candidate.name}</Td>
                 <Td>{candidate.votes}</Td>
                 <Td>{candidate.address}</Td>

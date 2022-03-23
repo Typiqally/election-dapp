@@ -31,7 +31,9 @@ const CandidateVoteForm: NextPage<IProps> = (props) => {
       <HStack>
         <Select name="candidate" placeholder="Select candidate" onChange={handleChange}>
           {
-            props.candidates && props.candidates.map(candidate => <option value={candidate.address}>{candidate.name}</option>)
+            props.candidates && props.candidates.map(candidate =>
+              <option key={candidate.address} value={candidate.address}>{candidate.name}</option>
+            )
           }
         </Select>
         <Button type="submit" colorScheme="teal" variant="outline">
