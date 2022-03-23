@@ -33,7 +33,7 @@ const ConnectWallet: NextPage<IProps> = (props) => {
       return;
     }
 
-    props.onWalletConnected(selectedAddress)
+    props.onWalletConnected(selectedAddress);
   };
 
   const validateNetwork = () => {
@@ -46,6 +46,8 @@ const ConnectWallet: NextPage<IProps> = (props) => {
       align="center"
       justify="center"
       h="100%"
+      bg="#111"
+      color="whiteAlpha.800"
     >
       <Box>
         <VStack>
