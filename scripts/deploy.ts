@@ -3,7 +3,9 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { ethers } from "hardhat";
+import { artifacts, ethers } from "hardhat";
+import * as path from "path";
+import { Contract } from "ethers";
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -12,14 +14,42 @@ async function main() {
   // If this script is run directly using `node` you may want to call compile
   // manually to make sure everything is compiled
   // await hre.run('compile');
-
   // We get the contract to deploy
-  const Greeter = await ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const [deployer] = await ethers.getSigners();
+  console.log(
+    "Deploying the contracts with the account:",
+    await deployer.getAddress()
+  );
 
-  await greeter.deployed();
+  console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  console.log("Greeter deployed to:", greeter.address);
+  const Election = await ethers.getContractFactory("Election");
+  const election = await Election.deploy();
+  await election.deployed();
+
+  console.log("Election contract address:", election.address);
+
+  saveContract("Election", election);
+}
+
+function saveContract(name: string, contract: Contract) {
+  const fs = require("fs");
+  const contractsDir = path.join(__dirname, "/../frontend/contracts/");
+
+  if (!fs.existsSync(contractsDir)) {
+    fs.mkdirSync(contractsDir);
+  }
+
+  const artifact = artifacts.readArtifactSync(name);
+  const contractFile = {
+    address: contract.address,
+    artifact: artifact,
+  };
+
+  fs.writeFileSync(
+    contractsDir + `/${name}.json`,
+    JSON.stringify(contractFile, null, 2)
+  );
 }
 
 // We recommend this pattern to be able to use async/await everywhere
