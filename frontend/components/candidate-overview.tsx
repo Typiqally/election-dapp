@@ -60,8 +60,8 @@ const CandidateOverview: NextPage<IProps> = (props) => {
   return (
     <>
       <VStack spacing={5}>
-        <p>Your wallet address: {props.address}</p>
         <CandidateTable candidates={state.candidates} />
+        <p>Your wallet address: {props.address}</p>
         <Container maxW="container.sm">
           <CandidateVoteForm candidates={state.candidates} onVote={handleVote} />
         </Container>
