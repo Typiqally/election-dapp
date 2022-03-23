@@ -1,6 +1,6 @@
 import { NextPage } from "next";
-import { HStack, Button, Select } from "@chakra-ui/react";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { VStack, Button, Select, FormLabel, FormControl } from "@chakra-ui/react";
 import Candidate from "../models/candidate";
 
 interface IProps {
@@ -30,18 +30,26 @@ const CandidateVoteForm: NextPage<IProps> = (props) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <HStack>
-        <Select name="candidateAddress" placeholder="Select candidate" onChange={handleChange}>
-          {
-            props.candidates && props.candidates.map(candidate =>
-              <option key={candidate.address} value={candidate.address}>{candidate.name}</option>
-            )
-          }
-        </Select>
-        <Button type="submit" colorScheme="teal" variant="outline">
+      <VStack align="end">
+        <FormControl>
+          <FormLabel htmlFor="candidateAddress">Candidate</FormLabel>
+          <Select id="candidateAddress" name="candidateAddress" onChange={handleChange}>
+            {
+              props.candidates && props.candidates.map(candidate => {
+                  return (
+                    <option key={candidate.address} value={candidate.address}>
+                      {candidate.name}
+                    </option>
+                  );
+                }
+              )
+            }
+          </Select>
+        </FormControl>
+        <Button type="submit" colorScheme="telegram">
           Cast vote
         </Button>
-      </HStack>
+      </VStack>
     </form>
   );
 };
