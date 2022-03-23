@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { Table, Thead, Tbody, Tr, Th, Td, TableCaption } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, Td} from "@chakra-ui/react";
 import Candidate from "../models/candidate";
 
 interface IProps {
@@ -11,7 +11,6 @@ const CandidateTable: NextPage<IProps> = (props) => {
 
   return (
     <Table id="candidates" variant="simple">
-      <TableCaption>Candidate list</TableCaption>
       <Thead>
         <Tr>
           <Th>Candidate</Th>
