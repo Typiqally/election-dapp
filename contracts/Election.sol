@@ -25,15 +25,15 @@ contract Election {
     }
 
     function signUpForCandidate(string memory name) public {
-        require(!candidateExists(msg.sender));
+        require(!candidateExists(msg.sender), "You have already registered as a candidate with your address");
 
         candidates[msg.sender] = Candidate(msg.sender, name, 0);
         candidateAddresses.push(msg.sender);
     }
 
     function castVote(address _address) public {
-        require(candidateExists(_address));
-        require(!ballotExists(msg.sender));
+        require(candidateExists(_address), "No valid candidate has been provided");
+        require(!ballotExists(msg.sender), "The user doesn't have a valid ballot");
 
         candidates[_address].votes += 1;
         ballot[msg.sender] = Vote(msg.sender, _address);

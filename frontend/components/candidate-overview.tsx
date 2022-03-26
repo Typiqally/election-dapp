@@ -8,6 +8,7 @@ import CandidateVoteForm from "../components/candidate-vote-form";
 import Candidate from "../models/candidate";
 import { useEffect, useState } from "react";
 import CandidateSignUpForm from "./candidate-sign-up-form";
+import GetRevertedReason from "./get-reverted-reason";
 
 interface IProps {
   election: Contract | undefined;
@@ -20,7 +21,7 @@ interface IState {
 
 const CandidateOverview: NextPage<IProps> = (props) => {
   const [state, setState] = useState<IState>({ candidates: null });
-
+  
   useEffect(() => {
     fetchCandidates().then(_ => console.log("Fetched candidates"));
 
@@ -55,7 +56,13 @@ const CandidateOverview: NextPage<IProps> = (props) => {
       return;
     }
 
-    await props.election.signUpForCandidate(name);
+    try {
+      await props.election.signUpForCandidate(name);
+    } catch (error) {
+      window.alert(GetRevertedReason(error.data.message));
+    }
+
+
   };
 
   const handleVote = async (candidate: Candidate | null) => {
@@ -63,8 +70,15 @@ const CandidateOverview: NextPage<IProps> = (props) => {
       return;
     }
 
-    await props.election.castVote(candidate.address);
+    try {
+      await props.election.castVote(candidate.address);
+    } catch (error) {
+      window.alert(GetRevertedReason(error.data.message));
+    }
+
+
   };
+
 
   return (
     <>
